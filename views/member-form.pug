@@ -1,0 +1,16 @@
+extends layout 
+
+block content
+    span(id="section-title")= title
+    if errors
+        for error in errors
+            span(id="error-message") #{error.msg}
+    if(user.membership_status == true)
+        span(id="already-member") You already joined the club.
+    else
+        div(id="form-container")
+            form(action="/become-member", method="POST")
+                div(id="label-input-pair")
+                    label(for="passcode") Enter the secret passcode below.
+                    input(name="passcode" placeholder="Enter passcode" type="number")
+                button Join

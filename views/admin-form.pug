@@ -1,0 +1,16 @@
+extends layout 
+
+block content
+    span(id="section-title")= title
+    if errors
+        for error in errors
+            span(id="error-message") #{error.msg}
+    if(user.admin_status == true)
+        span(id="already-admin") You are already an admin.
+    else
+        div(id="form-container")
+        form(action="/get-admin-access", method="POST")
+            div(id="label-input-pair")
+                label(for="passcode") Enter the admin passcode below to become an admin.
+                input(name="passcode" placeholder="Enter passcode" type="number")
+            button Submit

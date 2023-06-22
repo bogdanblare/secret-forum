@@ -1,0 +1,43 @@
+extends layout 
+
+block content
+    span(id="section-title") Posts
+    div(id="posts-container")
+        each post in posts.reverse()
+            div(id="post")
+                span(id="title") #{post.title}
+                span(id="content") #{post.content}
+                if(user && (user.admin_status === true || user.username === post.user.username))
+                    span(id="author-and-date") 
+                        | Posted by 
+                        span(id="accent") #{post.user.username}
+                        |  on 
+                        span(id="accent" data-time=post.time) N/A
+                    form(id="delete-post-button" action="/delete-post", method="POST")
+                        input(name="delete-post" type="hidden" value=`${post._id}`)
+                        button Delete
+                else 
+                    span(id="author-and-date") 
+                        | Posted by 
+                        span(id="accent") Member&nbsp;
+                        | at 
+                        span(id="accent") N/A
+        else 
+            span(id="no-posts") There are no posts.
+
+    // Format all dates on client-side with time zone of browser/local computer (not time zone of hosting platform's server)
+    script.
+        // Get all elements with a "data-time" attribute
+        const timeElements = document.querySelectorAll('[data-time]');
+
+        // Define the date and time formatting options
+        const dateOptions = { month: 'numeric', day: 'numeric', year: 'numeric' };
+        const timeOptions = { hour: 'numeric', minute: 'numeric' };
+
+        // Format and display the date for each element
+        timeElements.forEach(el => {
+            const time = new Date(el.getAttribute('data-time'));
+            const formattedDate = new Intl.DateTimeFormat('en-US', dateOptions).format(time);
+            const formattedTime = new Intl.DateTimeFormat('en-US', timeOptions).format(time);
+            el.textContent = `${formattedDate} at ${formattedTime}`;
+        });
